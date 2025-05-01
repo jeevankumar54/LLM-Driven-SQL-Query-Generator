@@ -1,6 +1,11 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
+
+# from dotenv import load_dotenv
+# load_dotenv()
+
+# Hardcode the API_HOST value
+API_HOST = "http://localhost:8000"
 
 from utils.api_client import APIClient
 from utils.state_management import initialize_session_state
@@ -8,8 +13,6 @@ from components.sql_editor import render_sql_editor
 from pages.query_generator import render_query_generator
 from pages.schema_manager import render_schema_manager
 from pages.query_history import render_query_history
-
-load_dotenv()
 
 API_HOST = os.getenv("API_HOST", "http://localhost:8000")
 
