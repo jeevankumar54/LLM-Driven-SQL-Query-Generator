@@ -17,15 +17,30 @@ def render_sql_editor(initial_sql: str = "", height: int = 200):
 
 
 def copy_to_clipboard_button(text: str, button_text: str = "Copy SQL", key: str = "copy_button"):
+    """
+    Display a button that helps the user copy text to clipboard.
+    Since direct clipboard access via JavaScript is not reliable in Streamlit,
+    this function provides a workaround by showing the text in a
+    temporary text area when the button is clicked.
+    """
     if st.button(button_text, key=key):
-        st.success("SQL copied to clipboard!")
+        # Create a container for the copy functionality
+        copy_container = st.container()
         
-        js_code = f"""
-        <script>
-        navigator.clipboard.writeText(`{text}`);
-        </script>
-        """
-        st.components.v1.html(js_code, height=0)
+        with copy_container:
+            st.success("SQL copied to selection area! Press Ctrl+A then Ctrl+C to copy.")
+            # Display the text in a text area that makes it easy to select all and copy
+            st.text_area(
+                "Select all text (Ctrl+A) and copy (Ctrl+C):",
+                value=text,
+                height=100,
+                key=f"copy_text_{key}"
+            )
+            # Add a button to hide the copy area after copying
+            if st.button("Done", key=f"done_{key}"):
+                # This doesn't actually hide the container, but on the next rerun it won't be shown
+                st.session_state[f"hide_copy_{key}"] = True
+                st.rerun()
 
 
 def render_sql_with_explanation(sql: str, explanation: str = ""):
